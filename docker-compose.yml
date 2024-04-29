@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  axon-server:
+    image: axoniq/axonserver:latest
+    ports:
+      - "8024:8024"
+      - "8124:8124"
+    networks:
+      - SpringBankNet
+    restart: always
+
+  mongo-container:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - SpringBankNet
+    volumes:
+      - mongodb_data_container:/data/db
+    restart: always
+
+  mysql-container:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    networks:
+      - SpringBankNet
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+    volumes:
+      - mysql_data_container:/var/lib/mysql
+    restart: always
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - SpringBankNet
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql-container-cqrs
+    restart: always
+
+networks:
+  SpringBankNet:
+    driver: bridge
+
+volumes:
+  mongodb_data_container:
+  mysql_data_container:
